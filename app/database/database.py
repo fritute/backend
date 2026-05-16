@@ -5,10 +5,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "mysql+pymysql://root:@localhost:3306/filmes_brasil",
-)
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("A variável de ambiente DATABASE_URL não está definida. Configure o arquivo .env.")
 
 engine = create_engine(DATABASE_URL, echo=False)
 
