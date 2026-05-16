@@ -27,6 +27,11 @@ def get_ator(id: int, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=AtorResponse, status_code=status.HTTP_201_CREATED, summary="Cadastra um novo ator")
 def post_ator(dados: AtorCreate, db: Session = Depends(get_db)):
+    if dados.filme_id is not None and not filme_service.buscar_filme_por_id(db, dados.filme_id):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Filme com id {dados.filme_id} não encontrado.",
+        )
     return filme_service.criar_ator(db, dados)
 
 
