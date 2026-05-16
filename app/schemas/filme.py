@@ -40,6 +40,13 @@ class AtorCreate(AtorBase):
     filme_id: Optional[int] = None
 
 
+class AtorUpdate(BaseModel):
+    nome: Optional[str] = Field(None, max_length=100)
+    nacionalidade: Optional[str] = Field(None, max_length=50)
+    idade: Optional[int] = Field(None, ge=0)
+    filme_id: Optional[int] = None
+
+
 class AtorResponse(AtorBase):
     id: int
     filme_id: Optional[int] = None

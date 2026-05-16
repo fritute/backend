@@ -2,7 +2,7 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 
 from app.models.filme import Filme, Categoria, Ator
-from app.schemas.filme import FilmeCreate, FilmeUpdate, CategoriaCreate, CategoriaUpdate, AtorCreate
+from app.schemas.filme import FilmeCreate, FilmeUpdate, CategoriaCreate, CategoriaUpdate, AtorCreate, AtorUpdate
 
 
 # ─────────────────────────────────────────
@@ -93,9 +93,37 @@ def listar_atores_do_filme(db: Session, filme_id: int) -> List[Ator]:
     return db.query(Ator).filter(Ator.filme_id == filme_id).all()
 
 
+def listar_atores(db: Session) -> List[Ator]:
+    return db.query(Ator).all()
+
+
+def buscar_ator_por_id(db: Session, ator_id: int) -> Optional[Ator]:
+    return db.query(Ator).filter(Ator.id == ator_id).first()
+
+
 def criar_ator(db: Session, dados: AtorCreate) -> Ator:
     ator = Ator(**dados.model_dump())
     db.add(ator)
     db.commit()
     db.refresh(ator)
     return ator
+
+
+def atualizar_ator(db: Session, ator_id: int, dados: AtorUpdate) -> Optional[Ator]:
+    ator = buscar_ator_por_id(db, ator_id)
+    if not ator:
+        return None
+    for campo, valor in dados.model_dump(exclude_unset=True).items():
+        setattr(ator, campo, valor)
+    db.commit()
+    db.refresh(ator)
+    return ator
+
+
+def deletar_ator(db: Session, ator_id: int) -> bool:
+    ator = buscar_ator_por_id(db, ator_id)
+    if not ator:
+        return False
+    db.delete(ator)
+    db.commit()
+    return True

@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from app.database.database import engine, Base
-from app.routers import filmes, categorias
+from app.routers import filmes, categorias, atores
 
 # Cria as tabelas no banco caso ainda não existam
 Base.metadata.create_all(bind=engine)
@@ -14,6 +14,7 @@ app = FastAPI(
 
 app.include_router(filmes.router)
 app.include_router(categorias.router)
+app.include_router(atores.router)
 
 
 @app.get("/", tags=["Health"])
