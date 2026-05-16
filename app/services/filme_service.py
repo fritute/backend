@@ -2,7 +2,7 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 
 from app.models.filme import Filme, Categoria, Ator
-from app.schemas.filme import FilmeCreate, FilmeUpdate, CategoriaCreate, AtorCreate
+from app.schemas.filme import FilmeCreate, FilmeUpdate, CategoriaCreate, CategoriaUpdate, AtorCreate
 
 
 # ─────────────────────────────────────────
@@ -59,6 +59,30 @@ def criar_categoria(db: Session, dados: CategoriaCreate) -> Categoria:
     db.commit()
     db.refresh(categoria)
     return categoria
+
+
+def buscar_categoria_por_id(db: Session, categoria_id: int) -> Optional[Categoria]:
+    return db.query(Categoria).filter(Categoria.id == categoria_id).first()
+
+
+def atualizar_categoria(db: Session, categoria_id: int, dados: CategoriaUpdate) -> Optional[Categoria]:
+    categoria = buscar_categoria_por_id(db, categoria_id)
+    if not categoria:
+        return None
+    for campo, valor in dados.model_dump(exclude_unset=True).items():
+        setattr(categoria, campo, valor)
+    db.commit()
+    db.refresh(categoria)
+    return categoria
+
+
+def deletar_categoria(db: Session, categoria_id: int) -> bool:
+    categoria = buscar_categoria_por_id(db, categoria_id)
+    if not categoria:
+        return False
+    db.delete(categoria)
+    db.commit()
+    return True
 
 
 # ─────────────────────────────────────────

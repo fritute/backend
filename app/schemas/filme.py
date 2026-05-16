@@ -16,6 +16,10 @@ class CategoriaCreate(CategoriaBase):
     pass
 
 
+class CategoriaUpdate(BaseModel):
+    nome: Optional[str] = Field(None, max_length=50)
+
+
 class CategoriaResponse(CategoriaBase):
     id: int
 
