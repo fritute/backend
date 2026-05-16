@@ -6,6 +6,8 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:bcd%40127@db:3306/filmes_brasil
     depends_on:
       db:
         condition: service_healthy
